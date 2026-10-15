@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vola Case Study | QA DNA</title>
+<meta name="description" content="How QA DNA built GoVola AI, the assistant that sells flights inside WhatsApp for Vola.ro, then rebuilt Vola's frontend and backend.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#005fb6; --blue-dark:#004a8f; --teal:#00b4a5; --yellow:#ffc52a;
+    --ink:#1a1a1f; --muted:#52565e; --line:#e2e8ef; --bg:#f4f6fb; --white:#fff;
+    --wa:#e7f8ef; --wa-bg:#efeae2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink);background:var(--white);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  @media (max-width:600px){.wrap{padding:0 16px}}
+
+  /* nav */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .brand{display:flex;align-items:center;gap:14px;font-weight:700;font-size:15px}
+  .brand svg{height:30px;width:auto}
+  .brand .x{color:var(--muted);font-weight:500}
+  .pill{font-size:13px;font-weight:600;color:var(--blue);background:#e6f0fa;padding:6px 12px;border-radius:99px}
+
+  /* hero */
+  .hero{background:var(--bg);border-bottom:1px solid var(--line)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:40px 0 72px}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:16px}
+  h1{font-size:clamp(34px,5vw,54px);line-height:1.08;font-weight:800;letter-spacing:-.02em;margin-bottom:22px}
+  h1 .hl{color:var(--blue);background:linear-gradient(transparent 68%,var(--yellow) 68%,var(--yellow) 92%,transparent 92%)}
+  .lede{font-size:18px;color:var(--muted);max-width:560px;margin-bottom:30px}
+  .lede b{color:var(--ink)}
+  .ctas{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;padding:13px 22px;border-radius:12px;text-decoration:none;transition:transform .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-blue{background:var(--blue);color:#fff}
+  .btn-ghost{background:#fff;color:var(--blue);border:1.5px solid var(--line)}
+  .btn-yellow{background:var(--yellow);color:var(--ink)}
+
+  /* phone */
+  .phone{background:var(--ink);border-radius:36px;padding:10px;max-width:340px;margin:0 auto;box-shadow:0 30px 60px -20px rgba(0,95,182,.35)}
+  .screen{background:var(--wa-bg);border-radius:28px;overflow:hidden}
+  .chat-head{background:#075e54;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:16px}
+  .chat-head b{display:block;font-size:14px}
+  .chat-head small{font-size:11px;opacity:.8}
+  .msgs{padding:14px 12px 18px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+  .m{max-width:84%;padding:8px 10px;border-radius:10px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+  .m .who{font-size:11px;font-weight:700;margin-bottom:2px}
+  .out{align-self:flex-end;background:#d9fdd3}
+  .in{align-self:flex-start;background:#fff}
+  .in .who{color:var(--blue)}
+  .out .who{color:#b5651d}
+  .fl{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid #eef1f4;font-size:12.5px}
+  .fl:first-of-type{border-top:0}
+  .fl b{color:var(--blue)}
+  .poll{margin-top:6px;font-size:12px;color:var(--muted)}
+  .bar{height:5px;border-radius:3px;background:var(--teal);margin:3px 0 6px}
+  .caption{text-align:center;font-size:12px;color:var(--muted);margin-top:14px}
+
+  /* stats */
+  .stats{background:var(--blue);color:#fff}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:44px 0}
+  .stat b{display:block;font-size:clamp(28px,3.4vw,40px);font-weight:800;color:var(--yellow);line-height:1.1}
+  .stat span{font-size:14px;opacity:.9}
+
+  /* sections */
+  section.block{padding:84px 0}
+  h2{font-size:clamp(26px,3.4vw,36px);line-height:1.15;font-weight:800;letter-spacing:-.015em;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:17px;max-width:640px;margin-bottom:44px}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px}
+  .card .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--blue);background:#e6f0fa;padding:4px 10px;border-radius:99px;margin-bottom:14px}
+  .card.lead{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+  .card h3{font-size:20px;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:15.5px}
+
+  .tested{background:var(--bg);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .checks{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .check{border-left:4px solid var(--teal);background:#fff;border-radius:0 14px 14px 0;padding:22px 22px}
+  .check h3{font-size:17px;margin-bottom:6px}
+  .check p{font-size:15px;color:var(--muted)}
+
+  .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;margin-top:8px}
+  .step{padding:0 24px 0 0}
+  .dot{width:16px;height:16px;border-radius:50%;background:var(--yellow);border:3px solid var(--blue);margin-bottom:16px;position:relative;z-index:1}
+  .timeline:before{content:"";position:absolute;top:7px;left:8px;right:24px;height:2px;background:var(--line)}
+  .step h3{font-size:18px;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:15px}
+
+  .cta{background:var(--ink);color:#fff;border-radius:24px;padding:56px;display:flex;justify-content:space-between;align-items:center;gap:32px;margin:0 0 84px}
+  .cta h2{color:#fff;margin-bottom:8px}
+  .cta p{color:#c7cfd7;font-size:17px;max-width:560px}
+
+  footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:44px;padding-bottom:56px}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .cards,.checks{grid-template-columns:1fr}
+    .timeline{grid-template-columns:1fr;gap:28px}
+    .timeline:before{display:none}
+    .cta{flex-direction:column;align-items:flex-start;padding:36px 24px}
+    section.block{padding:60px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <div class="brand"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="36" aria-label="Vola" role="img" viewBox="0 0 66 36" fill="none">
+    <path d="M58.8667 6.1059H55.155L48.6963 24.7015H52.408L52.8491 23.4303L53.324 22.0631H60.6977L60.9537 22.7997L61.6145 24.7015H65.3262L58.8675 6.1059H58.8667ZM54.5413 18.5577L54.8342 17.7141L55.1499 16.8041L55.3873 16.1197L57.0104 11.4483L58.6335 16.1197L59.1555 17.6215L59.1874 17.7133L59.4804 18.5568H54.5421L54.5413 18.5577Z" fill="#005FB6"/>
+    <path d="M20.8392 3.40203L19.6867 0.00012207C16.0044 1.24774 12.9031 3.74129 10.7176 7.21055C9.11221 9.75798 7.97318 12.8434 7.30643 16.4313L3.71173 6.08416H0L6.47132 24.7117H10.183L10.1797 24.7016H10.1957C10.1957 18.1167 11.3936 12.8762 13.7567 9.1266C15.5229 6.32324 17.9062 4.39709 20.84 3.40287L20.8392 3.40203Z" fill="#005FB6"/>
+    <path d="M25.0242 6.08417C19.883 6.08417 15.7158 10.2513 15.7158 15.3925C15.7158 20.5336 19.883 24.7008 25.0242 24.7008C30.1654 24.7008 34.3325 20.5336 34.3325 15.3925C34.3325 10.2513 30.1654 6.08417 25.0242 6.08417ZM25.0242 21.1861C21.8243 21.1861 19.2306 18.5923 19.2306 15.3925C19.2306 12.1926 21.8243 9.59888 25.0242 9.59888C28.2241 9.59888 30.8178 12.1926 30.8178 15.3925C30.8178 18.5923 28.2241 21.1861 25.0242 21.1861Z" fill="#005FB6"/>
+    <path d="M40.4428 21.181V19.3315V6.08417H36.9365V19.3315V21.181V21.1945V23.9793V24.7008H45.9351L47.1524 21.1945H40.4428V21.181Z" fill="#005FB6"/>
+    <path d="M30.8198 35.7441C28.5712 35.7441 26.3958 35.2878 24.3527 34.3879C22.3802 33.5191 20.6275 32.2816 19.1416 30.709L22.2186 27.8021C24.4781 30.1938 27.5323 31.5105 30.8198 31.5105C34.1072 31.5105 37.1614 30.1938 39.421 27.8021L42.4979 30.709C41.0121 32.2816 39.2593 33.5191 37.2869 34.3879C35.2437 35.2878 33.0675 35.7441 30.8198 35.7441Z" fill="#FFC52A"/>
+</svg>
+ <span class="x">×</span> QA DNA</div>
+      <span class="pill">Case study</span>
+    </nav>
+
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Travel · Conversational AI · Product engineering</p>
+        <h1>Vola sells flights inside WhatsApp. <span class="hl">We built it.</span></h1>
+        <p class="lede"><b>Vola.ro</b> is the market leader in online travel in Romania, with more than one million customers and a strong presence in Poland, Bulgaria and Moldova. We built <b>GoVola AI</b>, the assistant that finds and books flights in a WhatsApp chat. Around <b>4,000 travellers</b> use it every day.</p>
+        <div class="ctas">
+          <a class="btn btn-blue" href="https://whatsapp.vola.ro/" target="_blank" rel="noopener">Try GoVola AI on WhatsApp</a>
+          <a class="btn btn-ghost" href="https://www.vola.ro/ai-mode" target="_blank" rel="noopener">See AI mode on vola.ro</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="phone">
+          <div class="screen">
+            <div class="chat-head">
+              <div class="avatar">✈️</div>
+              <div><b>Vacanța de vară 🌞</b><small>Ana, Radu, Ioana, GoVola AI</small></div>
+            </div>
+            <div class="msgs">
+              <div class="m out"><div class="who">Ana</div>@GoVola weekend prelungit în iulie, sub 150 € de persoană, din București</div>
+              <div class="m in"><div class="who">GoVola AI</div>Am găsit trei variante pentru 10 iulie, 4 nopți:
+                <div class="fl"><span>Atena</span><b>96 €</b></div>
+                <div class="fl"><span>Napoli</span><b>104 €</b></div>
+                <div class="fl"><span>Barcelona</span><b>128 €</b></div>
+                <div class="poll">Votați unde mergem 👇</div>
+              </div>
+              <div class="m in" style="min-width:70%"><div class="who">📊 Sondaj</div>
+                <div class="poll">Napoli · 3 voturi</div><div class="bar" style="width:100%"></div>
+                <div class="poll">Atena · 1 vot</div><div class="bar" style="width:33%;background:#c7cfd7"></div>
+              </div>
+              <div class="m out"><div class="who">Radu</div>Napoli 🍕 rezervă pentru toți!</div>
+            </div>
+          </div>
+        </div>
+        <p class="caption">Illustrative group chat. Prices in the live product come from real time search.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><b>~4,000</b><span>daily users of GoVola AI</span></div>
+    <div class="stat"><b>500+</b><span>airlines searched live</span></div>
+    <div class="stat"><b>1M+</b><span>Vola customers</span></div>
+    <div class="stat"><b>12 June 2026</b><span>WhatsApp launch</span></div>
+  </div>
+</div>
+
+<section class="block">
+  <div class="wrap">
+    <p class="eyebrow">What we built</p>
+    <h2>One assistant, two channels, a new platform underneath.</h2>
+    <p class="sub">Searching for a flight meant filters, open tabs and manual comparisons. Vola wanted travellers to ask for a trip the way they ask a friend, in the chat where they already plan it.</p>
+
+    <div class="cards">
+      <div class="card lead">
+        <span class="tag">WhatsApp · Twilio</span>
+        <h3>GoVola AI in WhatsApp</h3>
+        <p>Travellers write "something warm in August, flying from Cluj" and get flight options with live prices in the chat. Added to a group, the assistant posts the options as a poll and the group books together. No app, no account, free to use.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Web</span>
+        <h3>AI mode on vola.ro</h3>
+        <p>The same assistant on the website: voice search, AI Deal Finder and Agent mode, next to classic flight and hotel search.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Frontend</span>
+        <h3>A rebuilt vola.ro frontend</h3>
+        <p>We rebuilt the customer facing frontend of vola.ro, from search through results to the AI mode screens.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Backend</span>
+        <h3>A rebuilt backend</h3>
+        <p>We rebuilt the services behind search and booking that both the website and the WhatsApp assistant call.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block tested">
+  <div class="wrap">
+    <p class="eyebrow">How we tested it</p>
+    <h2>A chatbot that sells tickets gets tested like a checkout.</h2>
+    <p class="sub">Agents plus engineers. Agents write and run the tests, engineers verify every one of them.</p>
+    <div class="checks">
+      <div class="check"><h3>Full conversations</h3><p>From the first message to the booking link, in one to one chats and in group chats with polls.</p></div>
+      <div class="check"><h3>On every change</h3><p>Suites run from every pull request, every branch and on a schedule against production.</p></div>
+      <div class="check"><h3>Self healing</h3><p>When the vola.ro interface changes, the affected tests are repaired and an engineer checks them again.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <p class="eyebrow">How the work grew</p>
+    <h2>We started with a chatbot. We now own the product.</h2>
+    <div class="timeline">
+      <div class="step"><div class="dot"></div><h3>The chatbot</h3><p>GoVola AI on WhatsApp through Twilio, launched publicly on 12 June 2026.</p></div>
+      <div class="step"><div class="dot"></div><h3>The testing</h3><p>Automated suites across WhatsApp and web, run on every release.</p></div>
+      <div class="step"><div class="dot"></div><h3>The platform</h3><p>Vola handed us the frontend and the backend. We rebuilt both and run them today.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="cta">
+    <div>
+      <h2>Building an AI product people use every day?</h2>
+      <p>We design it, build it and test it, from the first message to production.</p>
+    </div>
+    <a class="btn btn-yellow" href="https://qadna.co" target="_blank" rel="noopener">Talk to QA DNA</a>
+  </div>
+  <footer>
+    <span>© 2026 QA DNA</span>
+    <span>Vola, GoVola and the Vola logo belong to Vola.ro. Published with Vola's permission.</span>
+  </footer>
+</div>
+
+</body>
+</html>
